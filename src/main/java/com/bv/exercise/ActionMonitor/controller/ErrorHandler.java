@@ -1,6 +1,7 @@
 package com.bv.exercise.ActionMonitor.controller;
 
 import com.bv.exercise.ActionMonitor.exception.NoSuchTimeSeriesException;
+import com.bv.exercise.ActionMonitor.exception.TimeSeriesAlreadyExistException;
 import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.VndErrors.VndError;
@@ -25,6 +26,12 @@ public class ErrorHandler {
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public void handleEmptyResultDataAccessException() {
 
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(TimeSeriesAlreadyExistException.class)
+    public VndError handleNoSuchTimeSeriesException(final TimeSeriesAlreadyExistException exception) {
+        return new VndError(generateLogRef(), exception.getMessage());
     }
 
     private String generateLogRef() {
