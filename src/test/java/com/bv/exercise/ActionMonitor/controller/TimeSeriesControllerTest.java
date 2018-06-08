@@ -1,6 +1,8 @@
 package com.bv.exercise.ActionMonitor.controller;
 
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -8,11 +10,14 @@ import com.bv.exercise.ActionMonitor.ActionMonitorApplication;
 import com.bv.exercise.ActionMonitor.model.TimeSeries;
 import com.bv.exercise.ActionMonitor.repository.TimeSeriesRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,6 +56,11 @@ public class TimeSeriesControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    @After
+    public void tearDown() {
+        timeSeriesRepository.deleteAll();
+    }
+
     @Test
     public void tesGetNotExistingTimeSeriesData() throws Exception {
         mockMvc.perform(get(BASE_URL + NOT_EXISTING_ID))
@@ -62,5 +72,23 @@ public class TimeSeriesControllerTest {
         mockMvc.perform(get(BASE_URL + ID))
             .andExpect(status().isOk())
             .andExpect(content().string(objectMapper.writeValueAsString(TIME_SERIES)));
+    }
+
+    @Test
+    public void testInsertTimeSeriesData() throws Exception {
+        final TimeSeries timeSeries = createTimeSeries("abc-2", 20L);
+
+        mockMvc.perform(
+            post(BASE_URL).content(objectMapper.writeValueAsString(timeSeries)).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
+
+        assertThat("There should be a plus time series object!", timeSeriesRepository.count(), CoreMatchers.is(2L));
+    }
+
+    private TimeSeries createTimeSeries(final String id, final Long time) {
+        final TimeSeries timeSeries = new TimeSeries();
+        timeSeries.setId(id);
+        timeSeries.setTime(time);
+        return timeSeries;
     }
 }
