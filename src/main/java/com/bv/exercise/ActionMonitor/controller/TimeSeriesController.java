@@ -51,5 +51,7 @@ public class TimeSeriesController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTime(@PathVariable final String id) {
+        log.info("Delete time series data with: {}", id);
+        timeSeriesRepository.delete(id);
     }
 }

@@ -1,6 +1,8 @@
 package com.bv.exercise.ActionMonitor.controller;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -10,7 +12,6 @@ import com.bv.exercise.ActionMonitor.ActionMonitorApplication;
 import com.bv.exercise.ActionMonitor.model.TimeSeries;
 import com.bv.exercise.ActionMonitor.repository.TimeSeriesRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,7 +83,15 @@ public class TimeSeriesControllerTest {
             post(BASE_URL).content(objectMapper.writeValueAsString(timeSeries)).contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated());
 
-        assertThat("There should be a plus time series object!", timeSeriesRepository.count(), CoreMatchers.is(2L));
+        assertThat("There should be a plus time series object!", timeSeriesRepository.count(), is(2L));
+    }
+
+    @Test
+    public void testDeleteTimeSeriesData() throws Exception {
+        mockMvc.perform(delete(BASE_URL + ID)).andExpect(status().isNoContent());
+        mockMvc.perform(delete(BASE_URL + ID)).andExpect(status().isNoContent());
+
+        assertThat("The initial time series data should be deleted!", timeSeriesRepository.count(), is(0L));
     }
 
     private TimeSeries createTimeSeries(final String id, final Long time) {
