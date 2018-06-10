@@ -3,7 +3,6 @@ package com.bv.exercise.ActionMonitor.database.migration;
 import com.bv.exercise.ActionMonitor.model.TimeSeries;
 import com.bv.exercise.ActionMonitor.util.JmsUtil;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.api.Trigger;
@@ -18,15 +17,14 @@ public class InsertTrigger extends BaseTrigger implements Trigger {
   @Override
   public void fire(final Connection conn, final Object[] oldRow, final Object[] newRow) {
     log.info("INSERT trigger fired with old values: {} and new values: {}", oldRow, newRow);
-    final List<TimeSeries> timeSeriesList = transformTriggerObjects(newRow);
-    timeSeriesList.forEach(
-        timeSeries -> JmsUtil.sendMessage(timeSeries).whenCompleteAsync((result, throwable) -> {
-          if (Objects.isNull(throwable)) {
-            log.info("Sent JMS message successfully: {}", String.valueOf(timeSeries));
-          } else {
-            log.error("Error happened during execution!", String.valueOf(throwable));
-          }
-        }));
+    final TimeSeries timeSeries = transformTriggerObjects(newRow);
+    JmsUtil.sendMessage(timeSeries).whenCompleteAsync((result, throwable) -> {
+      if (Objects.isNull(throwable)) {
+        log.info("Sent JMS message successfully: {}", String.valueOf(timeSeries));
+      } else {
+        log.error("Error happened during execution!", String.valueOf(throwable));
+      }
+    });
   }
 
   @Override
