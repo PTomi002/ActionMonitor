@@ -20,6 +20,13 @@ public class BaseTriggerTest {
 
   private InsertTrigger insertTrigger;
 
+  private static TimeSeries initTimeSeries(final String id, final Long time) {
+    final TimeSeries timeSeries = new TimeSeries();
+    timeSeries.setId(id);
+    timeSeries.setTime(time);
+    return timeSeries;
+  }
+
   @Before
   public void setup() {
     insertTrigger = new InsertTrigger();
@@ -36,12 +43,5 @@ public class BaseTriggerTest {
 
     assertThat("Time series data should be equal to: " + TIME_SERIES.toString() + "!",
         timeSeries, is(TIME_SERIES));
-  }
-
-  private static TimeSeries initTimeSeries(final String id, final Long time) {
-    final TimeSeries timeSeries = new TimeSeries();
-    timeSeries.setId(id);
-    timeSeries.setTime(time);
-    return timeSeries;
   }
 }
