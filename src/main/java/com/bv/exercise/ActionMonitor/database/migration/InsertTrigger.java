@@ -1,5 +1,6 @@
 package com.bv.exercise.ActionMonitor.database.migration;
 
+import com.bv.exercise.ActionMonitor.configuration.MessagingConfiguration.ExecutionType;
 import com.bv.exercise.ActionMonitor.model.TimeSeries;
 import com.bv.exercise.ActionMonitor.util.JmsUtil;
 import java.sql.Connection;
@@ -10,6 +11,8 @@ import org.h2.api.Trigger;
 @Slf4j
 public class InsertTrigger extends BaseTrigger implements Trigger {
 
+  private static final ExecutionType TYPE = ExecutionType.INSERT;
+
   @Override
   public void init(Connection connection, String s, String s1, String s2, boolean b, int i) {
   }
@@ -17,12 +20,13 @@ public class InsertTrigger extends BaseTrigger implements Trigger {
   @Override
   public void fire(final Connection conn, final Object[] oldRow, final Object[] newRow) {
     log.info("INSERT trigger fired with old values: {} and new values: {}", oldRow, newRow);
-    final TimeSeries timeSeries = transformTriggerObjects(newRow);
-    JmsUtil.sendMessage(timeSeries).whenCompleteAsync((result, throwable) -> {
+    final TimeSeries insertedTimeSeries = transformTriggerObjects(newRow);
+    JmsUtil.sendMessage(insertedTimeSeries, TYPE).whenCompleteAsync((result, throwable) -> {
       if (Objects.isNull(throwable)) {
-        log.info("Sent JMS message successfully: {}", String.valueOf(timeSeries));
+        log.info("Sent " + TYPE + " JMS message successfully: {}",
+            String.valueOf(insertedTimeSeries));
       } else {
-        log.error("Error happened during execution!", String.valueOf(throwable));
+        log.error("Error happened during " + TYPE + " execution!", throwable);
       }
     });
   }
