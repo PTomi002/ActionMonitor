@@ -27,42 +27,44 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping(value = "/timeseries")
 public class TimeSeriesController {
 
-    private final TimeSeriesRepository timeSeriesRepository;
+  private final TimeSeriesRepository timeSeriesRepository;
 
-    @PostMapping
-    public ResponseEntity<TimeSeries> insertTimeSeries(@Validated @RequestBody final TimeSeries timeSeries) {
-        log.info("Inserting into database with: {}", timeSeries);
-        final TimeSeries foundTimeSeries = timeSeriesRepository.findOne(timeSeries.getId());
-        if (!Objects.isNull(foundTimeSeries)) {
-            throw new TimeSeriesAlreadyExistException("Time series data already exist: " + timeSeries.getId() + "!");
-        }
-        final TimeSeries savedTimeSeries = timeSeriesRepository.save(timeSeries);
-        return ResponseEntity.created(
-            UriComponentsBuilder.fromPath("/timeseries/").path("/{id}").buildAndExpand(savedTimeSeries.getId())
-                .toUri()).build();
+  @PostMapping
+  public ResponseEntity<TimeSeries> insertTimeSeries(
+      @Validated @RequestBody final TimeSeries timeSeries) {
+    log.info("Inserting into database with: {}", timeSeries);
+    final TimeSeries foundTimeSeries = timeSeriesRepository.findOne(timeSeries.getId());
+    if (!Objects.isNull(foundTimeSeries)) {
+      throw new TimeSeriesAlreadyExistException(
+          "Time series data already exist: " + timeSeries.getId() + "!");
     }
+    final TimeSeries savedTimeSeries = timeSeriesRepository.save(timeSeries);
+    return ResponseEntity.created(
+        UriComponentsBuilder.fromPath("/timeseries/").path("/{id}")
+            .buildAndExpand(savedTimeSeries.getId())
+            .toUri()).build();
+  }
 
-    @PutMapping
-    public void updateTimeSeries(@Validated @RequestBody final TimeSeries time) {
-        log.info("Update time series data with: {}", time);
-        timeSeriesRepository.save(time);
-    }
+  @PutMapping
+  public void updateTimeSeries(@Validated @RequestBody final TimeSeries time) {
+    log.info("Update time series data with: {}", time);
+    timeSeriesRepository.save(time);
+  }
 
-    @GetMapping("/{id}")
-    public TimeSeries getTimeSeries(@PathVariable final String id) {
-        log.info("Get time series data with: {}", id);
-        final TimeSeries foundTimeSeries = timeSeriesRepository.findOne(id);
-        if (Objects.isNull(foundTimeSeries)) {
-            log.warn("Time series data not found with: {}", id);
-            throw new NoSuchTimeSeriesException("No time series data found with: " + id + "!");
-        }
-        return foundTimeSeries;
+  @GetMapping("/{id}")
+  public TimeSeries getTimeSeries(@PathVariable final String id) {
+    log.info("Get time series data with: {}", id);
+    final TimeSeries foundTimeSeries = timeSeriesRepository.findOne(id);
+    if (Objects.isNull(foundTimeSeries)) {
+      throw new NoSuchTimeSeriesException("No time series data found with: " + id + "!");
     }
+    return foundTimeSeries;
+  }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTimeSeries(@PathVariable final String id) {
-        log.info("Delete time series data with: {}", id);
-        timeSeriesRepository.delete(id);
-    }
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteTimeSeries(@PathVariable final String id) {
+    log.info("Delete time series data with: {}", id);
+    timeSeriesRepository.delete(id);
+  }
 }

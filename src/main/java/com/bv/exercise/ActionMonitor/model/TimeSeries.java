@@ -10,9 +10,9 @@ import lombok.Data;
 @Entity
 public class TimeSeries {
 
-    @Id
-    @Size(min = 1, max = 10)
-    private String id;
-    @NotNull
-    private Long time;
+  @Id
+  @Size(min = 1, max = 10)
+  private String id;
+  @NotNull
+  private Long time;
 }
