@@ -12,7 +12,7 @@ public class TimeSeries {
 
   @Id
   @Size(min = 1, max = 10)
-  private String id;
+  protected String id;
   @NotNull
-  private Long time;
+  protected Long time;
 }
