@@ -51,6 +51,12 @@ public class TimeSeriesController {
     timeSeriesRepository.save(time);
   }
 
+  @GetMapping
+  public Iterable<TimeSeries> list() {
+    log.info("Return all time series data from database");
+    return timeSeriesRepository.findAll();
+  }
+
   @GetMapping("/{id}")
   public TimeSeries getTimeSeries(@PathVariable final String id) {
     log.info("Get time series data with: {}", id);
