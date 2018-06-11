@@ -1,0 +1,112 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Action-Monitor API",
+		"_postman_id": "5daf4568-c8df-0dd5-d3ce-25e87c037e77",
+		"description": "Action monitor API collection for the basic CRUD operations.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List all entries in database",
+			"request": {
+				"url": "http://localhost:8080/timeseries",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"adda\",\n\t\"time\":121\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get an entry from database",
+			"request": {
+				"url": "http://localhost:8080/timeseries/testId",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"adda\",\n\t\"time\":121\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an entry from database",
+			"request": {
+				"url": "http://localhost:8080/timeseries/testId",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add new entry to database",
+			"request": {
+				"url": "http://localhost:8080/timeseries",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"testId\",\n\t\"time\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update an entry in database",
+			"request": {
+				"url": "http://localhost:8080/timeseries",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"testId\",\n\t\"time\":10\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Actuator Health endpoint",
+			"request": {
+				"url": "http://localhost:8080/health",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Actuator Info endpoint",
+			"request": {
+				"url": "http://localhost:8080/info",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
