@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class TimeSeriesErrorHandler {
 
+  private static final String OLD_PATTERN = "-";
+  private static final String NEW_PATTERN = "";
+
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ExceptionHandler(NoSuchTimeSeriesException.class)
   public VndError handleNoSuchTimeSeriesException(final NoSuchTimeSeriesException exception) {
@@ -39,6 +42,6 @@ public class TimeSeriesErrorHandler {
   }
 
   private String generateLogRef() {
-    return StringUtils.replace(UUID.randomUUID().toString(), "-", "");
+    return StringUtils.replace(UUID.randomUUID().toString(), OLD_PATTERN, NEW_PATTERN);
   }
 }

@@ -150,6 +150,15 @@ public class TimeSeriesControllerTest {
         timeSeriesRepository.findOne("abc-3"));
   }
 
+  @Test
+  public void testInvalidDataSize() throws Exception {
+    final TimeSeries timeSeries = createTimeSeries("tooMchInputForThisTime", 40L);
+    mockMvc.perform(
+        put(BASE_URL).content(objectMapper.writeValueAsString(timeSeries))
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
   private TimeSeries createTimeSeries(final String id, final Long time) {
     final TimeSeries timeSeries = new TimeSeries();
     timeSeries.setId(id);
